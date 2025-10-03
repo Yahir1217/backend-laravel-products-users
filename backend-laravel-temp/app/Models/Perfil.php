@@ -7,8 +7,8 @@ use MongoDB\Laravel\Eloquent\Model;
 class Perfil extends Model
 {
     protected $connection = 'mongodb';
-    protected $collection = 'perfiles';  // 👈 fuerza la colección
-    protected $table = 'perfiles';       // 👈 esto evita que Eloquent pluralice raro
+    protected $collection = 'perfiles';  
+    protected $table = 'perfiles';       
 
     protected $fillable = [
         'codigo_perfil',
