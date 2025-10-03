@@ -4,26 +4,31 @@ namespace App\Models;
 
 use MongoDB\Laravel\Eloquent\Model;
 
-class Producto extends Model
+class Usuario extends Model
 {
     protected $connection = 'mongodb';
-    protected $collection = 'productos';
+    protected $collection = 'usuarios';
 
     protected $fillable = [
-        'codigo_producto',
+        'codigo_usuario',
+        'usuario',
         'nombre',
-        'marca',
-        'precio',
+        'telefono',
+        'foto_perfil',
+        'password',
         'fecha_creacion',
+        'perfiles',
     ];
 
     protected static function booted()
     {
-        static::creating(function ($producto) {
-            if (empty($producto->codigo_producto)) {
-                $producto->codigo_producto = 'PROD' . str_pad(mt_rand(1, 9999), 4, '0', STR_PAD_LEFT);
+        static::creating(function ($usuario) {
+            if (empty($usuario->codigo_usuario)) {
+                $usuario->codigo_usuario = 'USR' . str_pad(mt_rand(1, 9999), 4, '0', STR_PAD_LEFT);
             }
-            $producto->fecha_creacion = now();
+            $usuario->fecha_creacion = now();
         });
     }
+
+    protected $hidden = ['password'];
 }

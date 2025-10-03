@@ -6,6 +6,10 @@ use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\PerfilController;
 use App\Http\Controllers\BitacoraController;
+use App\Http\Controllers\AuthController;
+
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/logout', [AuthController::class, 'logout']);
 
 Route::prefix('usuarios')->group(function () {
     Route::get('/', [UsuarioController::class, 'index']);          // Listar
