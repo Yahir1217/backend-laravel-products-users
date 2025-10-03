@@ -15,7 +15,7 @@ Route::prefix('usuarios')->group(function () {
     Route::get('/', [UsuarioController::class, 'index']);          // Listar
     Route::get('/{id}', [UsuarioController::class, 'show']);      // Obtener uno
     Route::post('/', [UsuarioController::class, 'store']);        // Crear
-    Route::put('/{id}', [UsuarioController::class, 'update']);    // Actualizar
+    Route::post('/{id}', [UsuarioController::class, 'update']);    // Actualizar
     Route::delete('/{id}', [UsuarioController::class, 'destroy']); // Eliminar
 });
 
