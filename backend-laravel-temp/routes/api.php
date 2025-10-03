@@ -40,3 +40,7 @@ Route::prefix('bitacora')->group(function () {
     Route::post('/', [BitacoraController::class, 'store']);
 });
 
+Route::get('/usuarios/{id}/enviar-codigo', [UsuarioController::class, 'enviarCodigoVerificacion']);
+Route::post('/usuarios/{id}/verificar-codigo', [UsuarioController::class, 'verificarCodigoEmail']);
+
+
