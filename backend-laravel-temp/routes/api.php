@@ -17,6 +17,8 @@ Route::prefix('usuarios')->group(function () {
     Route::post('/', [UsuarioController::class, 'store']);        // Crear
     Route::post('/{id}', [UsuarioController::class, 'update']);    // Actualizar
     Route::delete('/{id}', [UsuarioController::class, 'destroy']); // Eliminar
+    Route::post('/{codigo_usuario}/update-password', [UsuarioController::class, 'actualizarPassword']);
+
 });
 
 Route::prefix('productos')->group(function () {
@@ -42,5 +44,7 @@ Route::prefix('bitacora')->group(function () {
 
 Route::get('/usuarios/{id}/enviar-codigo', [UsuarioController::class, 'enviarCodigoVerificacion']);
 Route::post('/usuarios/{id}/verificar-codigo', [UsuarioController::class, 'verificarCodigoEmail']);
+Route::get('/usuarios/codigo/{codigo_usuario}', [UsuarioController::class, 'buscarPorCodigo']);
+
 
 

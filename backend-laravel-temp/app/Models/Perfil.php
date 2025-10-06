@@ -26,5 +26,11 @@ class Perfil extends Model
             $perfil->fecha_creacion = now();
         });
     }
+
+    public function usuarios()
+    {
+        return $this->belongsToMany(Usuario::class, 'usuario_perfil', 'perfil_id', 'usuario_id');
+    }
+    
 }
 

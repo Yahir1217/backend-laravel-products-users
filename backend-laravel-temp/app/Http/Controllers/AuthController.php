@@ -6,11 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\Usuario;
 use App\Models\Perfil;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Crypt;
 
 class AuthController extends Controller
 {
-    // Login
     public function login(Request $request)
     {
         $request->validate([
@@ -18,25 +16,25 @@ class AuthController extends Controller
             'password' => 'required|string',
         ]);
 
+        // Obtener usuario
         $usuario = Usuario::where('usuario', $request->usuario)->first();
 
         if (!$usuario || !Hash::check($request->password, $usuario->password)) {
             return response()->json(['error' => 'Credenciales incorrectas'], 401);
         }
 
-        // Obtener los perfiles asociados al usuario
-        $perfilCodigos = [];
-        if (!empty($usuario->perfiles)) {
-            // suponiendo que $usuario->perfiles está en JSON ["ADMIN","PROD"]
-            $perfilCodigos = is_array($usuario->perfiles)
-                ? $usuario->perfiles
-                : json_decode($usuario->perfiles, true);
-        }
+        // IDs de perfiles del usuario
+        $perfilIds = is_array($usuario->perfiles) ? $usuario->perfiles : [];
 
-        $perfiles = Perfil::whereIn('codigo_perfil', $perfilCodigos)
-            ->get(['codigo_perfil', 'nombre', 'secciones']); // incluir secciones
+        // Todos los perfiles existentes
+        $todosLosPerfiles = Perfil::all(['_id', 'codigo_perfil', 'nombre', 'secciones']);
 
-        // Generar token simple (puedes usar JWT luego)
+        // Filtrar perfiles del usuario
+        $perfiles = $todosLosPerfiles->filter(function ($perfil) use ($perfilIds) {
+            return in_array((string)$perfil->_id, $perfilIds);
+        })->values();
+
+        // Token simple
         $token = base64_encode($usuario->codigo_usuario . '|' . now());
 
         return response()->json([
@@ -44,9 +42,10 @@ class AuthController extends Controller
                 'id' => $usuario->codigo_usuario,
                 'nombre' => $usuario->nombre,
                 'foto_perfil' => $usuario->foto_perfil,
-                'email' => $usuario->usuario
+                'email' => $usuario->usuario,
+                'email_verified_at' => $usuario->email_verified_at // <-- agregado
             ],
-            'perfiles' => $perfiles, // aquí van los perfiles con sus secciones
+            'perfiles' => $perfiles,
             'token' => $token
         ]);
     }

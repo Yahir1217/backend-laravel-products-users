@@ -17,7 +17,7 @@ class Usuario extends Model
         'foto_perfil',
         'password',
         'fecha_creacion',
-        'perfiles',
+        'perfiles', // array de IDs de perfiles
     ];
 
     protected static function booted()
@@ -31,4 +31,10 @@ class Usuario extends Model
     }
 
     protected $hidden = ['password'];
+
+    // 🔹 Relación con perfiles (renombrada para no chocar con el campo)
+    public function perfilesRelacion()
+    {
+        return $this->belongsToMany(Perfil::class, 'usuario_perfil', 'usuario_id', 'perfil_id');
+    }
 }
