@@ -12,12 +12,12 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout']);
 
 Route::prefix('usuarios')->group(function () {
-    Route::get('/', [UsuarioController::class, 'index']);                          // Listar todos
-    Route::get('/{codigo_usuario}', [UsuarioController::class, 'show']);          // Obtener uno
-    Route::post('/', [UsuarioController::class, 'store']);                         // Crear
-    Route::post('/{codigo_usuario}', [UsuarioController::class, 'update']);       // Actualizar
-    Route::delete('/{codigo_usuario}', [UsuarioController::class, 'destroy']);    // Eliminar
-    Route::post('/{codigo_usuario}/update-password', [UsuarioController::class, 'actualizarPassword']); // Actualizar contraseña
+    Route::get('/', [UsuarioController::class, 'index']);                         
+    Route::get('/{codigo_usuario}', [UsuarioController::class, 'show']);          
+    Route::post('/', [UsuarioController::class, 'store']);                         
+    Route::post('/{codigo_usuario}', [UsuarioController::class, 'update']);       
+    Route::delete('/{codigo_usuario}', [UsuarioController::class, 'destroy']);    
+    Route::post('/{codigo_usuario}/update-password', [UsuarioController::class, 'actualizarPassword']); 
 
     Route::get('/{codigo_usuario}/enviar-codigo', [UsuarioController::class, 'enviarCodigoVerificacion']);
     Route::post('/{codigo_usuario}/verificar-codigo', [UsuarioController::class, 'verificarCodigoEmail']);
@@ -44,7 +44,6 @@ Route::prefix('perfiles')->group(function () {
 
 Route::prefix('bitacora')->group(function () {
     Route::get('/', [BitacoraController::class, 'index']);
-    Route::post('/', [BitacoraController::class, 'store']);
 });
 
 

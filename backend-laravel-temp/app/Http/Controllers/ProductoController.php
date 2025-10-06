@@ -31,7 +31,7 @@ class ProductoController extends Controller
             'nombre' => 'required|string',
             'marca' => 'nullable|string',
             'precio' => 'nullable|numeric'
-        ]);
+        ]); 
 
         $data = $request->only(['codigo_producto', 'nombre', 'marca', 'precio']);
         $producto = Producto::create($data);

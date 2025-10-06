@@ -63,38 +63,40 @@ class UsuarioController extends Controller
         ]);
     }
 
-   // Crear usuario
-   public function store(Request $request)
-   {
-       $request->validate([
-           'usuario' => 'required|email|unique:usuarios,usuario',
-           'nombre' => 'required|string',
-       ]);
-
-       $data = $request->only(['usuario', 'nombre', 'telefono']);
-
-       // Perfiles opcionales
-       if ($request->filled('perfiles')) {
-           $perfiles = $request->input('perfiles');
-           $data['perfiles'] = is_string($perfiles) ? json_decode($perfiles, true) : $perfiles;
-       } else {
-           $data['perfiles'] = [];
-       }
-
-       $data['password'] = bcrypt('123456'); // contraseña fija
-       $usuario = Usuario::create($data);
-
-       // Bitácora
-       Bitacora::create([
-           'coleccion' => 'usuarios',
-           'accion' => 'insert',
-           'antes' => null,
-           'despues' => $usuario->toArray(),
-           'usuario_responsable' => 'Desconocido'
-       ]);
-
-       return response()->json($usuario, 201);
-   }
+    public function store(Request $request)
+    {
+        $request->validate([
+            'usuario' => 'required|email|unique:usuarios,usuario',
+            'nombre' => 'required|string',
+        ]);
+    
+        $data = $request->only(['usuario', 'nombre', 'telefono']);
+    
+        // Perfiles opcionales
+        if ($request->filled('perfiles')) {
+            $perfiles = $request->input('perfiles');
+            $data['perfiles'] = is_string($perfiles) ? json_decode($perfiles, true) : $perfiles;
+        } else {
+            $data['perfiles'] = [];
+        }
+    
+        // Si viene password se usa, sino se asigna '123456'
+        $data['password'] = bcrypt($request->input('password', '123456'));
+    
+        $usuario = Usuario::create($data);
+    
+        // Bitácora
+        Bitacora::create([
+            'coleccion' => 'usuarios',
+            'accion' => 'insert',
+            'antes' => null,
+            'despues' => $usuario->toArray(),
+            'usuario_responsable' => 'Desconocido'
+        ]);
+    
+        return response()->json($usuario, 201);
+    }
+    
 
    // Actualizar usuario
    public function update(Request $request, $codigo_usuario)
