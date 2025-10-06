@@ -14,10 +14,10 @@ class PerfilController extends Controller
         return response()->json(Perfil::all());
     }
 
-    // Obtener un perfil por ID
-    public function show($id)
+    // Obtener un perfil por codigo_perfil
+    public function show($codigo_perfil)
     {
-        $perfil = Perfil::find($id);
+        $perfil = Perfil::where('codigo_perfil', $codigo_perfil)->first();
         if (!$perfil) {
             return response()->json(['error' => 'Perfil no encontrado'], 404);
         }
@@ -27,7 +27,12 @@ class PerfilController extends Controller
     // Crear un perfil
     public function store(Request $request)
     {
-        $data = $request->only(['nombre', 'secciones']);
+        $request->validate([
+            'nombre' => 'required|string',
+            'secciones' => 'nullable|array'
+        ]);
+
+        $data = $request->only(['codigo_perfil', 'nombre', 'secciones']);
         $perfil = Perfil::create($data);
 
         // Registrar bitácora
@@ -43,14 +48,14 @@ class PerfilController extends Controller
     }
 
     // Actualizar un perfil
-    public function update(Request $request, $id)
+    public function update(Request $request, $codigo_perfil)
     {
-        $perfil = Perfil::find($id);
+        $perfil = Perfil::where('codigo_perfil', $codigo_perfil)->first();
         if (!$perfil) {
             return response()->json(['error' => 'Perfil no encontrado'], 404);
         }
 
-        $antes = $perfil->toArray(); // Guardar estado antes
+        $antes = $perfil->toArray();
         $data = $request->only(['nombre', 'secciones']);
         $perfil->update($data);
 
@@ -67,14 +72,14 @@ class PerfilController extends Controller
     }
 
     // Eliminar un perfil
-    public function destroy($id)
+    public function destroy($codigo_perfil)
     {
-        $perfil = Perfil::find($id);
+        $perfil = Perfil::where('codigo_perfil', $codigo_perfil)->first();
         if (!$perfil) {
             return response()->json(['error' => 'Perfil no encontrado'], 404);
         }
 
-        $antes = $perfil->toArray(); // Guardar estado antes
+        $antes = $perfil->toArray();
         $perfil->delete();
 
         // Registrar bitácora

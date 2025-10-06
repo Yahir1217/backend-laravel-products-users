@@ -8,23 +8,32 @@ use Illuminate\Http\Request;
 
 class ProductoController extends Controller
 {
+    // Listar todos los productos
     public function index()
     {
         return response()->json(Producto::all());
     }
 
-    public function show($id)
+    // Obtener un producto por codigo_producto
+    public function show($codigo_producto)
     {
-        $producto = Producto::find($id);
+        $producto = Producto::where('codigo_producto', $codigo_producto)->first();
         if (!$producto) {
             return response()->json(['error' => 'Producto no encontrado'], 404);
         }
         return response()->json($producto);
     }
 
+    // Crear un producto
     public function store(Request $request)
     {
-        $data = $request->only(['nombre', 'marca', 'precio']);
+        $request->validate([
+            'nombre' => 'required|string',
+            'marca' => 'nullable|string',
+            'precio' => 'nullable|numeric'
+        ]);
+
+        $data = $request->only(['codigo_producto', 'nombre', 'marca', 'precio']);
         $producto = Producto::create($data);
 
         // Registrar bitácora
@@ -39,14 +48,16 @@ class ProductoController extends Controller
         return response()->json($producto, 201);
     }
 
-    public function update(Request $request, $id)
+    // Actualizar un producto
+    public function update(Request $request, $codigo_producto)
     {
-        $producto = Producto::find($id);
+        $producto = Producto::where('codigo_producto', $codigo_producto)->first();
         if (!$producto) {
             return response()->json(['error' => 'Producto no encontrado'], 404);
         }
 
-        $antes = $producto->toArray(); // Guardar estado antes
+        $antes = $producto->toArray();
+
         $data = $request->only(['nombre', 'marca', 'precio']);
         $producto->update($data);
 
@@ -62,14 +73,15 @@ class ProductoController extends Controller
         return response()->json($producto);
     }
 
-    public function destroy($id)
+    // Eliminar un producto
+    public function destroy($codigo_producto)
     {
-        $producto = Producto::find($id);
+        $producto = Producto::where('codigo_producto', $codigo_producto)->first();
         if (!$producto) {
             return response()->json(['error' => 'Producto no encontrado'], 404);
         }
 
-        $antes = $producto->toArray(); // Guardar estado antes
+        $antes = $producto->toArray();
         $producto->delete();
 
         // Registrar bitácora
